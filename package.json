@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-pubnub",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "PubNub <doron@pubnub.com>",
     "description": "PubNub input (subscribe) and output (publish) nodes for Node-RED",
     "contributors": [
