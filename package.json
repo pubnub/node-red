@@ -1,0 +1,25 @@
+{
+    "name": "node-red-contrib-pubnub",
+    "version": "0.0.1",
+    "author": "PubNub <doron@pubnub.com>",
+    "description": "PubNub input (subscribe) and output (publish) nodes for Node-RED",
+    "contributors": [
+        {
+            "name": "Doron Sherman",
+            "email": "doron@pubnub.com"
+        }
+    ],
+    "dependencies": {
+        "pubnub": "3.x"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pubnub/javascript/node-red"
+    },
+    "keywords": [ "node-red", "pubnub" ],
+    "node-red": {
+        "nodes": {
+            "pubnub": "nodes/pubnub-node-red.js"
+        }
+    }
+}
