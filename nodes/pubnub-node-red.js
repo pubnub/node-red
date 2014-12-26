@@ -33,13 +33,8 @@ module.exports = function(RED) {
                 pn_obj.subscribe({
                     channel  : this.channel,
                     callback : function(message) {
-                        if (typeof message == 'string') {
-                            node.log("Received message payload is " + message);
-                            node.send({payload : message});
-                        }
-                        else {
-                            node.error("Received message is not a string!");
-                        }
+                        node.log("Received message payload is " + message);
+                        node.send({payload : message});
                     }
                 });
                 this.status({fill:"green",shape:"dot",text:"listening"});
