@@ -32,9 +32,9 @@ module.exports = function(RED) {
                 var node = this;
                 pn_obj.subscribe({
                     channel  : this.channel,
-                    callback : function(message) {
-                        node.log("Received message payload is " + message);
-                        node.send({payload : message});
+                    callback : function(message, env, channel) {
+                        node.log("Received message on channel " + channel + ", payload is " + message);
+                        node.send({channel: channel, payload: message});
                     }
                 });
                 this.status({fill:"green",shape:"dot",text:"listening"});
