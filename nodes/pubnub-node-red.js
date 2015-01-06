@@ -44,6 +44,16 @@ module.exports = function(RED) {
                 this.status({fill:"green",shape:"ring",text:"channel?"});
             }
         }
+
+        // Destroy on node close event
+        this.on('close', function() {
+          if (pn_obj != null && this.channel) {
+            pn_obj.unsubscribe({
+              channel: this.channel
+            });
+          }
+          pn_obj = null;
+        });
     }
     RED.nodes.registerType("pubnub in",PNInNode);
 
@@ -87,6 +97,11 @@ module.exports = function(RED) {
                 this.status({fill:"green",shape:"ring",text:"channel?"});
             }
         }
+
+        // Destroy on node close event
+        this.on('close', function() {
+          pn_obj = null;
+        });
     }
     RED.nodes.registerType("pubnub out",PNOutNode);
 
