@@ -1,7 +1,6 @@
 module.exports = function(RED) {
     "use strict";
     var PN = require("pubnub");
-    var pn_obj = null;
 
     // This is a config node holding the keys for connecting to PubNub
     function PubnubKeysNode(n) {
@@ -22,19 +21,19 @@ module.exports = function(RED) {
         this.keysConfig = RED.nodes.getNode(this.keys);
 
         // Establish a new connection
-        if (pn_obj == null)
+        if (this.pn_obj == null)
             PNInit(this);
 
         // Subscribe to a channel
-        if (pn_obj != null) {
+        if (this.pn_obj != null) {
             if (this.channel) {
                 this.log("Subscribing to channel (" + this.channel + ")");
                 var node = this;
-                pn_obj.subscribe({
+                this.pn_obj.subscribe({
                     channel  : this.channel,
-                    callback : function(message) {
-                        node.log("Received message payload is " + message);
-                        node.send({payload : message});
+                    callback : function(message, env, channel) {
+                        node.log("Received message on channel " + channel + ", payload is " + message);
+                        node.send({channel: channel, payload: message});
                     }
                 });
                 this.status({fill:"green",shape:"dot",text:"listening"});
@@ -44,6 +43,18 @@ module.exports = function(RED) {
                 this.status({fill:"green",shape:"ring",text:"channel?"});
             }
         }
+
+        // Destroy on node close event
+        var node = this;
+        this.on('close', function() {
+          if (node.pn_obj != null && node.channel) {
+            node.log("Unsubscribing from channel " + node.channel);
+            node.pn_obj.unsubscribe({
+              channel: node.channel
+            });
+          }
+          node.pn_obj = null;
+        });
     }
     RED.nodes.registerType("pubnub in",PNInNode);
 
@@ -58,16 +69,16 @@ module.exports = function(RED) {
         this.keysConfig = RED.nodes.getNode(this.keys);
 
         // Establish a new connection
-        if (pn_obj == null)
+        if (this.pn_obj == null)
             PNInit(this);
 
         // Publish to a channel
-        if (pn_obj != null) {
+        if (this.pn_obj != null) {
             if (this.channel) {
                 var node = this;
                 this.on("input", function(msg) {
                     this.log("Publishing to channel (" + node.channel + ")");
-                    pn_obj.publish({
+                    node.pn_obj.publish({
                         channel : node.channel,
                         message : msg.payload,
                         callback : function(e) {
@@ -87,6 +98,12 @@ module.exports = function(RED) {
                 this.status({fill:"green",shape:"ring",text:"channel?"});
             }
         }
+
+        // Destroy on node close event
+        var node = this;
+        this.on('close', function() {
+          node.pn_obj = null;
+        });
     }
     RED.nodes.registerType("pubnub out",PNOutNode);
 
@@ -101,7 +118,7 @@ module.exports = function(RED) {
         if (keys) {
             node.log("Connecting to PubNub (" +
                 keys.publish_key + ":" + keys.subscribe_key+")");
-            pn_obj = PN.init({
+            node.pn_obj = PN.init({
                 publish_key : keys.publish_key,
                 subscribe_key : keys.subscribe_key
             });
