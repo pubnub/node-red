@@ -127,7 +127,7 @@ module.exports = function(RED) {
         if (keys) {
             node.log("Connecting to PubNub (" +
                 keys.publish_key + ":" + keys.subscribe_key+")");
-            node.pn_obj = PN.init({
+            node.pn_obj = PN({
                 publish_key : keys.publish_key,
                 subscribe_key : keys.subscribe_key,
                 auth_key : keys.auth_key,

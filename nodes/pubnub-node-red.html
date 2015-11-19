@@ -7,6 +7,10 @@
         <label for="node-input-channel"><i class="fa fa-tasks"></i> Channel</label>
         <input type="text" id="node-input-channel" placeholder="node-red">
     </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
     <div class="form-tips">You may listen to a list of comma-separated channels - ch1,ch2,etc.</div>
 </script>
 
@@ -25,14 +29,15 @@
         outputs:1,
         icon: "pnTiny.png",
         label: function() {
-            return this.channel ||"pubnub";
+            return this.name ||"pubnub";
         },
         labelStyle: function() {
             return this.channel?"node_label_italic":"";
         },
         defaults: {
             keys: {type:"pubnub-keys",required:true},
-            channel: {value:"node-red",required:true}
+            channel: {value:"node-red",required:true},
+            name: {value:""}
         }
     });
 </script>
@@ -46,6 +51,10 @@
     <div class="form-row">
         <label for="node-input-channel"><i class="fa fa-tasks"></i> Channel</label>
         <input type="text" id="node-input-channel" placeholder="node-red">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
     </div>
 </script>
 
@@ -63,14 +72,15 @@
         icon: "pnTiny.png",
         align: "right",
         label: function() {
-            return this.channel||"pubnub";
+            return this.name ||"pubnub";
         },
         labelStyle: function() {
             return this.channel?"node_label_italic":"";
         },
         defaults: {
             keys: {type:"pubnub-keys",required:true},
-            channel: {value:"node-red",required:true}
+            channel: {value:"node-red",required:true},
+            name: {value:""}
         }
     });
 </script>
