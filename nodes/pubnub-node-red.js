@@ -5,10 +5,17 @@ module.exports = function(RED) {
     // This is a config node holding the keys for connecting to PubNub
     function PubnubKeysNode(n) {
         RED.nodes.createNode(this,n);
-        this.publish_key = n.pub_key;
-        this.subscribe_key = n.sub_key;
     }
-    RED.nodes.registerType("pubnub-keys",PubnubKeysNode);
+    RED.nodes.registerType("pubnub-keys",PubnubKeysNode,{
+        credentials: {
+            publish_key: { type:"text" },
+            subscribe_key: { type:"text" },
+            auth_key: { type:"password" },
+            cipher_key: { type:"password" },
+            ssl: { type:"bool" },
+            uuid : { type:"text" }
+        }
+    });
 
 
     //
@@ -18,6 +25,8 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,n);
         this.channel = n.channel;
         this.keys = n.keys;
+
+
         this.keysConfig = RED.nodes.getNode(this.keys);
 
         // Establish a new connection
@@ -114,13 +123,17 @@ module.exports = function(RED) {
     //
     function PNInit(node) {
         node.status({fill:"red",shape:"ring",text:"disconnected"});
-        var keys = node.keysConfig;
+        var keys = node.keysConfig.credentials;
         if (keys) {
             node.log("Connecting to PubNub (" +
                 keys.publish_key + ":" + keys.subscribe_key+")");
             node.pn_obj = PN.init({
                 publish_key : keys.publish_key,
-                subscribe_key : keys.subscribe_key
+                subscribe_key : keys.subscribe_key,
+                auth_key : keys.auth_key,
+                cipher_key : keys.cipher_key,
+                ssl : keys.ssl,
+                uuid : keys.uuid
             });
             node.status({fill:"yellow",shape:"dot",text:"connected"});
         }

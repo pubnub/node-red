@@ -25,7 +25,7 @@
         outputs:1,
         icon: "pnTiny.png",
         label: function() {
-            return this.channel||"pubnub";
+            return this.channel ||"pubnub";
         },
         labelStyle: function() {
             return this.channel?"node_label_italic":"";
@@ -78,24 +78,47 @@
 
 <script type="text/x-red" data-template-name="pubnub-keys">
     <div class="form-row">
-        <label for="node-config-input-pub_key"><i class="fa fa-tag"></i> Publish Key</label>
-        <input type="text" id="node-config-input-pub_key">
+        <label for="node-config-input-publish_key"><i class="fa fa-tag"></i> Publish Key</label>
+        <input type="text" id="node-config-input-publish_key">
     </div>
     <div class="form-row">
-        <label for="node-config-input-sub_key"><i class="fa fa-tag"></i> Subscribe Key</label>
-        <input type="text" id="node-config-input-sub_key">
+        <label for="node-config-input-subscribe_key"><i class="fa fa-tag"></i> Subscribe Key</label>
+        <input type="text" id="node-config-input-subscribe_key">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-auth_key"><i class="fa fa-tag"></i> Auth Key</label>
+        <input type="password" id="node-config-input-auth_key">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-cipher_key"><i class="fa fa-tag"></i> Cipher Key</label>
+        <input type="password" id="node-config-input-cipher_key">
+    </div>
+    <div class="form-row">
+        <label><i class="fa fa-lock"></i>&nbsp;</label>
+        <input type="checkbox" id="node-config-input-ssl" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-config-input-ssl">SSL</label>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-uuid"><i class="fa fa-user"></i> UUID</label>
+        <input type="text" id="node-config-input-uuid">
     </div>
 </script>
 
 <script type="text/javascript">
     RED.nodes.registerType('pubnub-keys',{
         category: 'config',
-        defaults: {
-            pub_key: {value:"demo",required:true},
-            sub_key: {value:"demo",required:true}
+        defaults: { },
+        credentials: {
+            publish_key: {value:"demo",required:true},
+            subscribe_key: {value:"demo",required:true},
+            auth_key: {value:"demo"},
+            cipher_key: {value:"demo"},
+            ssl: {value:true},
+            uuid: {value:null},
         },
         label: function() {
-            return this.pub_key+"/"+this.sub_key;
-        }
+            return "PubNub"; //this.credentials.publish_key+"/"+this.credentials.subscribe_key;
+        },
+        exportable: false
     });
 </script>
