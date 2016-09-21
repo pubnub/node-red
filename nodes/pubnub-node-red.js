@@ -7,7 +7,7 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,n);
         this.publish_key = n.pub_key;
         this.subscribe_key = n.sub_key;
-        this.partner_id = "ATT-Flow";
+        this.partner_id = "ATT_Flow";
         this.ssl = false;
     }
     RED.nodes.registerType("pubnub-keys",PubnubKeysNode);
@@ -122,7 +122,9 @@ module.exports = function(RED) {
                 keys.publish_key + ":" + keys.subscribe_key+")");
             node.pn_obj = PN.init({
                 publish_key : keys.publish_key,
-                subscribe_key : keys.subscribe_key
+                subscribe_key : keys.subscribe_key,
+                partner_id : keys.partner_id,
+                ssl : keys.ssl
             });
             node.status({fill:"yellow",shape:"dot",text:"connected"});
         }
