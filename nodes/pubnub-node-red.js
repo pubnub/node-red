@@ -7,6 +7,8 @@ module.exports = function(RED) {
         RED.nodes.createNode(this,n);
         this.publish_key = n.pub_key;
         this.subscribe_key = n.sub_key;
+        this.partner_id = "ATT-Flow";
+        this.ssl = false;
     }
     RED.nodes.registerType("pubnub-keys",PubnubKeysNode);
 
