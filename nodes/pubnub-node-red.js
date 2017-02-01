@@ -1,13 +1,13 @@
-const PN = require('pubnub');
+const PubNub = require('pubnub');
 
 module.exports = (RED) => {
   // This is a config node holding the keys for connecting to PubNub
   function PubnubKeysNode(n) {
     RED.nodes.createNode(this, n);
+
     this.publish_key = n.pub_key;
     this.subscribe_key = n.sub_key;
     this.partner_id = 'ATT_Flow';
-    this.ssl = false;
   }
 
   RED.nodes.registerType('pubnub-keys', PubnubKeysNode);
@@ -21,12 +21,33 @@ module.exports = (RED) => {
     const keys = node.keysConfig;
     if (keys) {
       node.log(`Connecting to PubNub (${keys.publish_key}:${keys.subscribe_key})`);
-      node.pn_obj = PN.init({
-        publish_key: keys.publish_key,
-        subscribe_key: keys.subscribe_key,
-        partner_id: keys.partner_id,
-        ssl: keys.ssl
+      node.pn_obj = new PubNub({
+        publishKey: keys.publish_key,
+        subscribeKey: keys.subscribe_key,
+        partnerId: keys.partner_id,
+        cipherKey: node.cipherKey,
+        authKey: node.authKey,
+        ssl: node.ssl,
+        logVerbosity: false
       });
+
+      node.pn_obj.addListener({
+        message(m) {
+          node.log(`Message event arrived (${JSON.stringify(m, null, '\t')})`);
+          node.send({ channel: m.channel, payload: m.message });
+        },
+        presence: (p) => {
+          node.log(`Presence event arrived (${JSON.stringify(p, null, '\t')})`);
+        },
+        status(s) {
+          if (s.category === 'PNConnectedCategory') {
+            node.status({ fill: 'green', shape: 'dot', text: 'listening' });
+          }
+
+          node.log(`Status event arrived (${JSON.stringify(s, null, '\t')})`);
+        }
+      });
+
       node.status({ fill: 'yellow', shape: 'dot', text: 'connected' });
     } else {
       node.error('Unknown publish and subscribe keys!');
@@ -41,6 +62,9 @@ module.exports = (RED) => {
     RED.nodes.createNode(this, n);
     this.channel = n.channel;
     this.keys = n.keys;
+    this.authKey = n.auth_token;
+    this.cipherKey = n.cipher_key;
+    this.ssl = n.ssl;
     this.keysConfig = RED.nodes.getNode(this.keys);
 
     // Establish a new connection
@@ -52,15 +76,7 @@ module.exports = (RED) => {
     if (this.pn_obj != null) {
       if (this.channel) {
         this.log(`Subscribing to channel (${this.channel})`);
-        const node = this;
-        this.pn_obj.subscribe({
-          channel: this.channel,
-          callback(message, env, channel) {
-            node.log(`Received message on channel ${channel}, payload is ${message}`);
-            node.send({ channel, payload: message });
-          }
-        });
-        this.status({ fill: 'green', shape: 'dot', text: 'listening' });
+        this.pn_obj.subscribe({ channels: this.channel.split(',') });
       } else {
         this.warn('Unknown channel name!');
         this.status({ fill: 'green', shape: 'ring', text: 'channel?' });
@@ -72,9 +88,7 @@ module.exports = (RED) => {
     this.on('close', () => {
       if (node.pn_obj != null && node.channel) {
         node.log(`Unsubscribing from channel ${node.channel}`);
-        node.pn_obj.unsubscribe({
-          channel: node.channel
-        });
+        node.pn_obj.unsubscribe({ channels: [node.channel.split(',')] });
       }
       node.pn_obj = null;
     });
@@ -89,6 +103,9 @@ module.exports = (RED) => {
     RED.nodes.createNode(this, n);
     this.channel = n.channel;
     this.keys = n.keys;
+    this.authKey = n.auth_token;
+    this.cipherKey = n.cipher_key;
+    this.ssl = n.ssl;
     this.keysConfig = RED.nodes.getNode(this.keys);
 
     // Establish a new connection
@@ -102,14 +119,12 @@ module.exports = (RED) => {
         const node = this;
         this.on('input', (msg) => {
           this.log(`Publishing to channel (${node.channel})`);
-          node.pn_obj.publish({
-            channel: node.channel,
-            message: msg.payload,
-            callback(e) {
-              node.log(`Success sending message ${msg.payload}(${e})`);
-            },
-            error(e) {
-              node.log(`Failure sending message ${msg.payload}(${e}). Please retry publish!`);
+
+          node.pn_obj.publish({ hannel: node.channel, message: msg.payload }, (status, response) => {
+            if (status.error) {
+              node.log(`Failure sending message ${msg.payload}(${status})(${response}). Please retry publish!`);
+            } else {
+              node.log(`Success sending message ${msg.payload}(${status})`);
             }
           });
         });

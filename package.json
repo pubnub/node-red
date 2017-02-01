@@ -10,7 +10,7 @@
     }
   ],
   "dependencies": {
-    "pubnub": "3.16.0"
+    "pubnub": "^4.4.2"
   },
   "repository": {
     "type": "git",
