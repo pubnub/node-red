@@ -28,7 +28,7 @@ module.exports = (RED) => {
         cipherKey: node.cipherKey,
         authKey: node.authKey,
         ssl: node.ssl,
-        logVerbosity: false
+        logVerbosity: this.verboseLogging
       });
 
       node.pn_obj.addListener({
@@ -65,6 +65,7 @@ module.exports = (RED) => {
     this.authKey = n.auth_token;
     this.cipherKey = n.cipher_key;
     this.ssl = n.ssl;
+    this.verboseLogging = n.verbose_logging;
     this.keysConfig = RED.nodes.getNode(this.keys);
 
     // Establish a new connection
@@ -106,6 +107,7 @@ module.exports = (RED) => {
     this.authKey = n.auth_token;
     this.cipherKey = n.cipher_key;
     this.ssl = n.ssl;
+    this.verboseLogging = n.verbose_logging;
     this.keysConfig = RED.nodes.getNode(this.keys);
 
     // Establish a new connection
@@ -120,11 +122,11 @@ module.exports = (RED) => {
         this.on('input', (msg) => {
           this.log(`Publishing to channel (${node.channel})`);
 
-          node.pn_obj.publish({ hannel: node.channel, message: msg.payload }, (status, response) => {
+          node.pn_obj.publish({ channel: node.channel, message: msg.payload }, (status, response) => {
             if (status.error) {
-              node.log(`Failure sending message ${msg.payload}(${status})(${response}). Please retry publish!`);
+              node.log(`Failure sending message ${msg.payload}(${JSON.stringify(status, null, '\t')}). Please retry publish!`);
             } else {
-              node.log(`Success sending message ${msg.payload}(${status})`);
+              node.log(`Success sending message ${msg.payload}: (${JSON.stringify(response, null, '\t')}) `);
             }
           });
         });

@@ -19,7 +19,14 @@
         <label for="node-input-ssl"><i class="fa fa-tasks"></i> SSL</label>
         <input type="checkbox" id="node-input-ssl" checked>
     </div>
+
     <div class="form-tips">You may listen to a list of comma-separated channels - ch1,ch2,etc.</div>
+
+    <hr>
+    <div class="form-row">
+        <label for="node-input-verbose_logging"><i class="fa fa-tasks"></i> Logging</label>
+        <input type="checkbox" id="node-input-verbose_logging">
+    </div>
 </script>
 
 <script type="text/x-red" data-help-name="pubnub in">
@@ -48,6 +55,7 @@
             auth_token: { required: false },
             cipher_key: { required: false },
             ssl: { value: true, required: false },
+            verbose_logging: { value: false, required: false },
         }
     });
 </script>
@@ -73,6 +81,12 @@
     <div class="form-row">
         <label for="node-input-ssl"><i class="fa fa-tasks"></i> SSL</label>
         <input type="checkbox" id="node-input-ssl" checked>
+    </div>
+
+    <hr>
+    <div class="form-row">
+        <label for="node-input-verbose_logging"><i class="fa fa-tasks"></i> Logging</label>
+        <input type="checkbox" id="node-input-verbose_logging">
     </div>
 </script>
 
@@ -101,6 +115,7 @@
             auth_token: { required: false },
             cipher_key: { required: false },
             ssl: { value: true, required: false },
+            verbose_logging: { value: false, required: false },
         }
     });
 </script>
