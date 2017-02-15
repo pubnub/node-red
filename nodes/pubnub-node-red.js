@@ -7,7 +7,6 @@ module.exports = (RED) => {
 
     this.publish_key = n.pub_key;
     this.subscribe_key = n.sub_key;
-    this.partner_id = 'ATT_Flow';
   }
 
   RED.nodes.registerType('pubnub-keys', PubnubKeysNode);
@@ -24,7 +23,6 @@ module.exports = (RED) => {
       node.pn_obj = new PubNub({
         publishKey: keys.publish_key,
         subscribeKey: keys.subscribe_key,
-        partnerId: keys.partner_id,
         cipherKey: node.cipherKey,
         authKey: node.authKey,
         ssl: node.ssl,
