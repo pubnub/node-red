@@ -1,6 +1,6 @@
-const PubNub = require('pubnub');
+var PubNub = require('pubnub');
 
-module.exports = (RED) => {
+module.exports = function (RED) {
   // This is a config node holding the keys for connecting to PubNub
   function PubnubKeysNode(n) {
     RED.nodes.createNode(this, n);
@@ -17,9 +17,9 @@ module.exports = (RED) => {
   //
   function initializePubNub(node) {
     node.status({ fill: 'red', shape: 'ring', text: 'disconnected' });
-    const keys = node.keysConfig;
+    var keys = node.keysConfig;
     if (keys) {
-      node.log(`Connecting to PubNub (${keys.publish_key}:${keys.subscribe_key})`);
+      node.log('Connecting to PubNub ' + keys.publish_key + ':' + keys.subscribe_key);
       node.pn_obj = new PubNub({
         publishKey: keys.publish_key,
         subscribeKey: keys.subscribe_key,
@@ -30,19 +30,19 @@ module.exports = (RED) => {
       });
 
       node.pn_obj.addListener({
-        message(m) {
-          node.log(`Message event arrived (${JSON.stringify(m, null, '\t')})`);
+        message: function (m) {
+          node.log('Message event arrived: ' + JSON.stringify(m, null, '\t'));
           node.send({ channel: m.channel, payload: m.message });
         },
-        presence: (p) => {
-          node.log(`Presence event arrived (${JSON.stringify(p, null, '\t')})`);
+        presence: function (p) {
+          node.log('Presence event arrived: ' + JSON.stringify(p, null, '\t'));
         },
-        status(s) {
+        status: function (s) {
           if (s.category === 'PNConnectedCategory') {
             node.status({ fill: 'green', shape: 'dot', text: 'listening' });
           }
 
-          node.log(`Status event arrived (${JSON.stringify(s, null, '\t')})`);
+          node.log('Status event arrived: ' + JSON.stringify(s, null, '\t'));
         }
       });
 
@@ -74,7 +74,7 @@ module.exports = (RED) => {
     // Subscribe to a channel
     if (this.pn_obj != null) {
       if (this.channel) {
-        this.log(`Subscribing to channel (${this.channel})`);
+        this.log('Subscribing to channel ' + this.channel);
         this.pn_obj.subscribe({ channels: this.channel.split(',') });
       } else {
         this.warn('Unknown channel name!');
@@ -83,10 +83,10 @@ module.exports = (RED) => {
     }
 
     // Destroy on node close event
-    const node = this;
-    this.on('close', () => {
+    var node = this;
+    this.on('close', function () {
       if (node.pn_obj != null && node.channel) {
-        node.log(`Unsubscribing from channel ${node.channel}`);
+        node.log('Unsubscribing from channel ' + node.channel);
         node.pn_obj.unsubscribe({ channels: [node.channel.split(',')] });
       }
       node.pn_obj = null;
@@ -108,6 +108,8 @@ module.exports = (RED) => {
     this.verboseLogging = n.verbose_logging;
     this.keysConfig = RED.nodes.getNode(this.keys);
 
+    var node;
+
     // Establish a new connection
     if (this.pn_obj == null) {
       initializePubNub(this);
@@ -116,15 +118,15 @@ module.exports = (RED) => {
     // Publish to a channel
     if (this.pn_obj != null) {
       if (this.channel) {
-        const node = this;
-        this.on('input', (msg) => {
-          this.log(`Publishing to channel (${node.channel})`);
+        node = this;
+        this.on('input', function (msg) {
+          this.log('Publishing to channel ' + node.channel);
 
-          node.pn_obj.publish({ channel: node.channel, message: msg.payload }, (status, response) => {
+          node.pn_obj.publish({ channel: node.channel, message: msg.payload }, function (status, response) {
             if (status.error) {
-              node.log(`Failure sending message ${msg.payload}(${JSON.stringify(status, null, '\t')}). Please retry publish!`);
+              node.log('Failure sending message ' + msg.payload + ' ' + JSON.stringify(status, null, '\t') + 'Please retry publish!');
             } else {
-              node.log(`Success sending message ${msg.payload}: (${JSON.stringify(response, null, '\t')}) `);
+              node.log('Success sending message ' + msg.payload + ' ' + JSON.stringify(response, null, '\t'));
             }
           });
         });
@@ -136,8 +138,8 @@ module.exports = (RED) => {
     }
 
     // Destroy on node close event
-    const node = this;
-    this.on('close', () => {
+    node = this;
+    this.on('close', function () {
       node.pn_obj = null;
     });
   }
