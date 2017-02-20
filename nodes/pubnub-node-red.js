@@ -26,6 +26,7 @@ module.exports = function (RED) {
         cipherKey: node.cipherKey,
         authKey: node.authKey,
         ssl: node.ssl,
+        partnerId: 'ATT_FLOW',
         logVerbosity: this.verboseLogging
       });
 
