@@ -1,7 +1,7 @@
 PUBNUB Node-RED
 ===============
 
-Node-RED module to access the [http://www.pubnub.com/developers/](PUBNUB API).
+Node-RED module to access the [PUBNUB API](http://www.pubnub.com/developers/).
 
 # Install
 
