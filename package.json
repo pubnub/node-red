@@ -12,7 +12,7 @@
     }
   ],
   "dependencies": {
-    "pubnub": "^4.4.2"
+    "pubnub": "^4.4.2",
     "mustache": "^2.3.0"
   },
   "repository": {
