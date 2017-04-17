@@ -1,4 +1,5 @@
 var PubNub = require('pubnub');
+var Mustache = require('mustache');
 
 module.exports = function (RED) {
   // This is a config node holding the keys for connecting to PubNub
@@ -120,9 +121,11 @@ module.exports = function (RED) {
       if (this.channel) {
         node = this;
         this.on('input', function (msg) {
+	node.channel = Mustache.render(node.channel, msg.payload);
           this.log('Publishing to channel ' + node.channel);
 
-          node.pn_obj.publish({ channel: node.channel, message: msg.payload }, function (status, response) {
+	
+ 	  node.pn_obj.publish({ channel: node.channel, message: msg.payload }, function (status, response) {
             if (status.error) {
               node.log('Failure sending message ' + msg.payload + ' ' + JSON.stringify(status, null, '\t') + 'Please retry publish!');
             } else {
