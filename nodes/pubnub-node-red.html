@@ -5,7 +5,7 @@
     </div>
     <div class="form-row">
         <label for="node-input-channel"><i class="fa fa-tasks"></i> Channel</label>
-        <input type="text" id="node-input-channel" placeholder="node-red">
+        <input type="text" id="node-input-channel" placeholder="singleChannel or ch1,ch2,etc.">
     </div>
     <div class="form-row">
         <label for="node-input-auth_token"><i class="fa fa-tasks"></i> Auth Token</label>
@@ -20,7 +20,7 @@
         <input type="checkbox" id="node-input-ssl" checked>
     </div>
 
-    <div class="form-tips">You may listen to a list of comma-separated channels - ch1,ch2,etc.</div>
+    <div class="form-tips">You may listen to a list of comma-separated channels - ch1,ch2,etc.</div>    
 </script>
 
 <script type="text/x-red" data-help-name="pubnub in">
@@ -62,7 +62,7 @@
     </div>
     <div class="form-row">
         <label for="node-input-channel"><i class="fa fa-tasks"></i> Channel</label>
-        <input type="text" id="node-input-channel" placeholder="node-red">
+        <input type="text" id="node-input-channel" placeholder="singleChannel or ch1,ch2,etc.">
     </div>
     <div class="form-row">
         <label for="node-input-auth_token"><i class="fa fa-tasks"></i> Auth Token</label>
@@ -79,7 +79,7 @@
 </script>
 
 <script type="text/x-red" data-help-name="pubnub out">
-    <p>Publishes <b>msg.payload</b> to the PubNub channel specified by the edit window.</p>
+    <p>Publishes <b>msg.payload</b> to the PubNub channel specified by the edit window, or you can dynamically set a channel per message via <code>msg.channel</code></p>
     <p>The <code>msg.payload</code> input may be a string or a JSON object</p>
 </script>
 
@@ -99,7 +99,7 @@
         },
         defaults: {
             keys: {type:"pubnub-keys",required:true},
-            channel: {value:"node-red",required:true},
+            channel: { value: "", required: false },
             auth_token: { required: false },
             cipher_key: { required: false },
             ssl: { value: true, required: false },
@@ -118,6 +118,10 @@
         <label for="node-config-input-sub_key"><i class="fa fa-tag"></i> Subscribe Key</label>
         <input type="text" id="node-config-input-sub_key">
     </div>
+    <div class="form-row">
+        <label for="node-config-uuid"><i class="fa fa-tag"></i> Manual UUID</label>
+        <input type="text" id="node-config-uuid">
+    </div>
 </script>
 
 <script type="text/javascript">
@@ -126,9 +130,14 @@
         defaults: {
             pub_key: {value:"demo",required:true},
             sub_key: {value:"demo",required:true},
+            uuid: {value:"",required:false}
         },
         label: function() {
-            return this.pub_key+"/"+this.sub_key;
+            if (this.uuid) {
+                return this.pub_key+"/"+this.sub_key+"/"+this.uuid;
+            } else {
+                return this.pub_key+"/"+this.sub_key;
+            }
         }
     });
 </script>
