@@ -100,7 +100,7 @@ module.exports = function (RED) {
   //
   function PNOutNode(n) {
     RED.nodes.createNode(this, n);
-    this.channel = n.channel;
+    this.channel = n.channel || msg.channel;
     this.keys = n.keys;
     this.authKey = n.auth_token;
     this.cipherKey = n.cipher_key;
