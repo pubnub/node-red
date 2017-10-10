@@ -117,24 +117,24 @@ module.exports = function (RED) {
 
     // Publish to a channel
     if (this.pn_obj != null) {
-      if (this.channel) {
-        node = this;
-        this.on('input', function (msg) {
-          this.log('Publishing to channel ' + node.channel);
-
-          node.pn_obj.publish({ channel: node.channel, message: msg.payload }, function (status, response) {
+      node = this;
+      this.on('input', function (msg) {
+        var outChannel = (msg.channel) ? msg.channel : node.channel;
+        if (outChannel) {
+          this.log('Publishing to channel ' + outChannel);
+          node.pn_obj.publish({ channel: outChannel, message: msg.payload }, function (status, response) {
             if (status.error) {
-              node.log('Failure sending message ' + msg.payload + ' ' + JSON.stringify(status, null, '\t') + 'Please retry publish!');
+              node.warn('Failure sending message ' + msg.payload + ' ' + JSON.stringify(status, null, '\t') + 'Please retry publish!');
             } else {
               node.log('Success sending message ' + msg.payload + ' ' + JSON.stringify(response, null, '\t'));
             }
           });
-        });
-        this.status({ fill: 'green', shape: 'dot', text: 'published' });
-      } else {
-        this.warn('Unknown channel name!');
-        this.status({ fill: 'green', shape: 'ring', text: 'channel?' });
-      }
+          this.status({ fill: 'green', shape: 'dot', text: 'published' });
+        } else {
+          this.warn('Unknown channel name!');
+          this.status({ fill: 'green', shape: 'ring', text: 'channel?' });
+        }
+      });
     }
 
     // Destroy on node close event

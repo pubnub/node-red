@@ -80,6 +80,8 @@
 
 <script type="text/x-red" data-help-name="pubnub out">
     <p>Publishes <b>msg.payload</b> to the PubNub channel specified by the edit window.</p>
+    <p>Messages will publish whatever your default channel(s) are (as defined in the config),
+    or you can pass it a dynamic <code>msg.channel</code> to publish to instead.
     <p>The <code>msg.payload</code> input may be a string or a JSON object</p>
 </script>
 
