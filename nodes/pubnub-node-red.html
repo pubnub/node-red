@@ -12,10 +12,6 @@
         <input type="text" id="node-input-auth_token">
     </div>
     <div class="form-row">
-        <label for="node-input-uuid"><i class="fa fa-tasks"></i> Manual UUID</label>
-        <input type="text" id="node-input-uuid">
-    </div>
-    <div class="form-row">
         <label for="node-input-cipher_key"><i class="fa fa-tasks"></i> Cipher Key</label>
         <input type="text" id="node-input-cipher_key">
     </div>
@@ -50,7 +46,6 @@
         defaults: {
             keys: {type:"pubnub-keys", required:true},
             channel: {value:"node-red", required:true},
-            uuid: {value:"", required:false},
             auth_token: { required: false },
             cipher_key: { required: false },
             ssl: { value: true, required: false },
@@ -72,10 +67,6 @@
     <div class="form-row">
         <label for="node-input-auth_token"><i class="fa fa-tasks"></i> Auth Token</label>
         <input type="text" id="node-input-auth_token">
-    </div>
-    <div class="form-row">
-        <label for="node-input-uuid"><i class="fa fa-tasks"></i> Manual UUID</label>
-        <input type="text" id="node-input-uuid">
     </div>
     <div class="form-row">
         <label for="node-input-cipher_key"><i class="fa fa-tasks"></i> Cipher Key</label>
@@ -109,7 +100,6 @@
         defaults: {
             keys: {type:"pubnub-keys",required:true},
             channel: { value: "", required: false },
-            uuid: { value: "", required: false },
             auth_token: { required: false },
             cipher_key: { required: false },
             ssl: { value: true, required: false },

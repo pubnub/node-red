@@ -20,7 +20,11 @@ module.exports = function (RED) {
     node.status({ fill: 'red', shape: 'ring', text: 'disconnected' });
     var keys = node.keysConfig;
     if (keys) {
-      node.log('Connecting to PubNub ' + keys.publish_key + ':' + keys.subscribe_key);
+      if (keys.uuid) {
+        node.log('Connecting to PubNub ' + keys.publish_key + ':' + keys.subscribe_key + " [UUID: " + keys.uuid + "]");
+      } else {
+        node.log('Connecting to PubNub ' + keys.publish_key + ':' + keys.subscribe_key);
+      }
       node.pn_obj = new PubNub({
         publishKey: keys.publish_key,
         subscribeKey: keys.subscribe_key,
