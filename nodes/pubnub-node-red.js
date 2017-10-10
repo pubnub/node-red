@@ -7,6 +7,7 @@ module.exports = function (RED) {
 
     this.publish_key = n.pub_key;
     this.subscribe_key = n.sub_key;
+    this.uuid = n.uuid;
   }
 
   RED.nodes.registerType('pubnub-keys', PubnubKeysNode);
@@ -23,6 +24,7 @@ module.exports = function (RED) {
       node.pn_obj = new PubNub({
         publishKey: keys.publish_key,
         subscribeKey: keys.subscribe_key,
+        uuid: keys.uuid,
         cipherKey: node.cipherKey,
         authKey: node.authKey,
         ssl: node.ssl,
